@@ -1,0 +1,5 @@
+#Entorno vitual
+entorno_virtual/
+
+#Base de datos local
+db.sqlite3
