@@ -20,16 +20,16 @@ class Tarea(models.Model):
     ]
 
     ESTADO_CHOICES=[
-        ('PENDINTE', 'Pendiente'), 
+        ('PENDIENTE', 'Pendiente'), 
         ('EN_PROGRESO', 'En progreso'),
         ('COMPLETADA', 'Completada')
     ]
 
     #Relacion 1 a muchos: Un proyecto tiene muchas tareas
-    proyecto= models.ForeignKey(
+    proyecto = models.ForeignKey(
         Proyecto,
         on_delete= models.CASCADE,
-        related_name= 'tareas'
+        related_name='tareas'
     )
     titulo = models.CharField(max_length=50)
     prioridad= models.CharField(

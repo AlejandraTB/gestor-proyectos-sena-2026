@@ -1,37 +1,168 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear tarea</title>
+    <title>Crear tarea · Gestor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        .form-card {
+            transition: all 0.25s ease;
+        }
+        .form-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.1);
+        }
+        .input-focus {
+            transition: all 0.2s ease;
+        }
+        .input-focus:focus {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+        }
+        .btn-submit {
+            transition: all 0.2s ease;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+        }
+        .btn-submit:active {
+            transform: translateY(0px);
+        }
+    </style>
 </head>
-<body>
-    <h1>Agregar tarea a: <span>{{ proyecto.nombre }}</span></h1>
+<body class="min-h-screen flex items-center justify-center p-4 md:p-8 font-sans antialiased bg-gradient-to-br from-slate-50 via-indigo-50/30 to-slate-50">
 
-    <form method="post">
-        {% csrf_token %}
-        <div class="space-y-1.5">
-            <label for="titulo">Titulo de la tarea</label>
-            <input type="text" name="titulo" id="titulo" placeholder="Ej.Diseñar base de datos" required>
-        </div>
-            <div class="space-y-1.5">
-            <label for="prioridad">Prioridad</label>
-            <select name="prioridad" id="prioridad">
-            {% for valor, etiqueda in prioridad_choices %}
-            <option value="{{ valor }}" {% if valor == 'MEDIA' %} selected {% endif %}>{{ etiqueda }}</option>
-            {% endfor %}
-            </select>
+    <div class="w-full max-w-2xl bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-6 md:p-10 border border-white/50">
+
+        <!-- Cabecera -->
+        <div class="flex items-center gap-4 mb-8 border-b border-slate-200/60 pb-6">
+            <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 p-3.5 rounded-2xl text-white shadow-lg shadow-emerald-500/25">
+                <i class="fa-solid fa-plus text-2xl"></i>
+            </div>
+            <div class="flex-1">
+                <h1 class="text-2xl md:text-3xl font-bold text-slate-800 tracking-tight">
+                    Crear tarea
+                </h1>
+                <p class="text-sm text-slate-500 font-light flex items-center gap-2 mt-0.5">
+                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    Asignar nueva tarea al proyecto
+                </p>
+            </div>
+            <a href="{% url 'ver_proyecto' proyecto.id %}" 
+               class="group inline-flex items-center gap-2 px-5 py-2.5 bg-white text-slate-600 text-sm font-medium rounded-xl border border-slate-200 hover:border-emerald-300 hover:text-emerald-600 hover:shadow-md transition-all duration-200">
+                <i class="fa-solid fa-arrow-left group-hover:-translate-x-0.5 transition-transform"></i>
+                <span class="hidden sm:inline">Volver</span>
+            </a>
         </div>
 
-        <div class="space-y-1.5">
-            <label for="estado">Estado</label>
-            <select name="estado" id="estado">
-            {% for valor, etiqueda in estado_choices %}
-            <option value="{{ valor }}" {% if valor == 'PENDIENTE' %} selected {% endif %}>{{ etiqueda }}</option>
-            {% endfor %}
-            </select>
+        <!-- Formulario -->
+        <div class="form-card bg-white rounded-2xl p-6 md:p-8 border border-slate-100 shadow-sm">
+            
+            <!-- Título del proyecto -->
+            <div class="flex items-center gap-3 mb-8 pb-6 border-b border-slate-100">
+                <div class="bg-gradient-to-br from-indigo-100 to-indigo-200/50 p-2.5 rounded-xl text-indigo-600">
+                    <i class="fa-regular fa-folder-open"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Proyecto</p>
+                    <p class="text-lg font-bold text-slate-800">{{ proyecto.nombre }}</p>
+                </div>
+            </div>
+
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+
+                <!-- Título de la tarea -->
+                <div class="space-y-2">
+                    <label for="titulo" class="block text-sm font-semibold text-slate-700">
+                        <i class="fa-regular fa-pen-to-square text-indigo-400 mr-2"></i>
+                        Título de la tarea
+                    </label>
+                    <div class="relative">
+                        <input type="text" 
+                               name="titulo" 
+                               id="titulo" 
+                               placeholder="Ej. Diseñar base de datos" 
+                               required
+                               class="input-focus w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 focus:bg-white outline-none transition-all text-slate-700 placeholder:text-slate-400">
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-300">
+                            <i class="fa-regular fa-pen-to-square"></i>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-1">Ingresa un título descriptivo para la tarea</p>
+                </div>
+
+                <!-- Prioridad -->
+                <div class="space-y-2">
+                    <label for="prioridad" class="block text-sm font-semibold text-slate-700">
+                        <i class="fa-regular fa-flag text-amber-400 mr-2"></i>
+                        Prioridad
+                    </label>
+                    <div class="relative">
+                        <select name="prioridad" 
+                                id="prioridad"
+                                class="input-focus w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 focus:bg-white outline-none transition-all text-slate-700 appearance-none cursor-pointer">
+                            {% for valor, etiqueda in prioridad_choices %}
+                                <option value="{{ valor }}" {% if valor == 'MEDIA' %} selected {% endif %} class="py-2">
+                                    {{ etiqueda }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estado -->
+                <div class="space-y-2">
+                    <label for="estado" class="block text-sm font-semibold text-slate-700">
+                        <i class="fa-regular fa-circle-check text-blue-400 mr-2"></i>
+                        Estado
+                    </label>
+                    <div class="relative">
+                        <select name="estado" 
+                                id="estado"
+                                class="input-focus w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 focus:bg-white outline-none transition-all text-slate-700 appearance-none cursor-pointer">
+                            {% for valor, etiqueda in estado_choices %}
+                                <option value="{{ valor }}" {% if valor == 'PENDIENTE' %} selected {% endif %} class="py-2">
+                                    {{ etiqueda }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón de guardar -->
+                <div class="pt-4 border-t border-slate-100">
+                    <button type="submit" 
+                            class="btn-submit w-full inline-flex items-center justify-center gap-3 px-8 py-3.5 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white font-medium rounded-xl hover:from-indigo-700 hover:to-indigo-800 transition-all duration-200 shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/30">
+                        <i class="fa-regular fa-floppy-disk"></i>
+                        Guardar tarea
+                    </button>
+                </div>
+
+                <!-- Información adicional -->
+                <div class="flex items-center justify-center gap-4 text-xs text-slate-400/70 pt-2">
+                    <span class="flex items-center gap-1.5">
+                        <i class="fa-regular fa-circle-check text-emerald-400"></i>
+                        Campos requeridos
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                        <i class="fa-regular fa-clock text-indigo-400"></i>
+                        Creación inmediata
+                    </span>
+                </div>
+
+            </form>
         </div>
-        <button type="submit">Guardar</button>
-    </form>
+
+    </div>
+
 </body>
-</html>                                            
+</html>
