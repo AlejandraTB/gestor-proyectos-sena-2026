@@ -3,131 +3,120 @@ from django.views.decorators.http import require_POST
 from django.http import HttpResponse
 from .models import Proyecto, Tarea
 
-
 def home(request):
-    return render(request, 'home.html')
+  return render(request, 'home.html')
 
+def acerca_de(request):
+  return render(request, 'acerca-de.html')
 
 def mostrar_proyectos(request):
-    proyectos = Proyecto.objects.all()
-    return render(request, 'proyectos.html', {'proyectos': proyectos})
+  proyectos = Proyecto.objects.all()
+  return render(request, 'proyectos.html', {'proyectos': proyectos})
 
 def nuevos_registros(request):
-    proyectos = [
-        Proyecto (nombre="Aplicacion de biblioteca", descripcion= "Aplicacion web para gestionar los libros y prestamos de la biblioteca", duarcion = 200),
-        Proyecto (nombre="Aplicacion de mensajeria", descripcion= "Aplicacion web para enviar mensajes de texto", duarcion = 1000),
-        Proyecto (nombre="Tienda virtual", descripcion= "Aplicacion web para comprar y vender productos en linea", duarcion = 200),]
-
-    for p in proyectos:
-        p.save()
-
-    return HttpResponse("Registros guardados")
+  Proyecto.objects.create(nombre="Aplicación bancaria", descripcion="Aplicación web gestionar cuentas bancarias", duracion=1000)
+  
+  return HttpResponse("Registros guardados.")
 
 def ver_proyecto(request, id):
-    proyecto= Proyecto.objects.get(id=id)
-    return render(request, 'detalle-proyecto.html', {'proyecto': proyecto})
-    
-'''
-** En SQL **
-
-INSER INTO proyecto (nombre, descripcion, duracion) VALUES
-("Aplicacion de biblioteca", "Aplicacion web para gestionar los libros y prestamos de la biblioteca,200)''' 
-
+  proyecto = Proyecto.objects.get(id=id)
+  return render(request,'detalle-proyecto.html', {'proyecto': proyecto})
 
 def nuevo_proyecto(request):
-    if request.method == 'POST':
-        nombre = request.POST.get('nombre')
-        descripcion = request.POST.get('descripcion')
-        duarcion = request.POST.get('duarcion')
+  if request.method == "POST":
+    nombre = request.POST.get('nombre')
+    descripcion = request.POST.get('descripcion')
+    duracion = request.POST.get('duracion')
 
-        if nombre and descripcion and duarcion:
-            proyecto = Proyecto(
-            nombre = nombre,
-            descripcion = descripcion,
-            duarcion = int(duarcion)
-        )
-        proyecto.save()
-
-        return redirect('proyectos')
+    if nombre and descripcion and duracion:
+      proyecto = Proyecto(
+        nombre=nombre,
+        descripcion=descripcion,
+        duracion=duracion
+      )
+      proyecto.save()
     
-    return render(request, 'nuevo-proyecto.html')
+      return redirect('proyectos')
+
+  return render(request, 'nuevo-proyecto.html')
 
 def eliminar_proyecto(request, id):
-    proyecto = Proyecto.objects.get(id= id )
-    proyecto.delete()
-    return redirect('proyectos')
+  proyecto = Proyecto.objects.get(id=id)
+  proyecto.delete()
+  return redirect('proyectos')
 
 def editar_proyecto(request, id):
-    proyecto = Proyecto.objects.get(id= id )
+  proyecto = Proyecto.objects.get(id=id)
 
-    if request.method == 'POST':
-        nombre = request.POST.get('nombre').strip()
-        descripcion = request.POST.get('descripcion')
-        duarcion = request.POST.get('duarcion')
+  if request.method == "POST":
+    nombre = request.POST.get('nombre')
+    descripcion = request.POST.get('descripcion')
+    duracion = request.POST.get('duracion')
 
-        if nombre and descripcion and duarcion:
-            proyecto.nombre= nombre
-            proyecto.descripcion= descripcion
-            proyecto.duarcion= int(duarcion)
-            proyecto.save()
+    if nombre and descripcion and duracion:
+      proyecto.nombre = nombre
+      proyecto.descripcion = descripcion
+      proyecto.duracion = int(duracion)
+      proyecto.save()
 
-            return redirect('ver_proyecto', id=proyecto.id)        
+      return redirect('ver_proyecto', id=proyecto.id)
 
-    return render (request, 'editar-proyecto.html', {'proyecto': proyecto})
+  return render(request, 'editar-proyecto.html', {'proyecto': proyecto})
 
 def crear_tarea(request, proyecto_id):
-    proyecto = get_object_or_404(Proyecto,id= proyecto_id)
+  proyecto = get_object_or_404(Proyecto, id=proyecto_id)
 
-    if request.method == 'POST':
-        titulo= request.POST.get('titulo').strip()
-        prioridad= request.POST.get('prioridad')
-        estado= request.POST.get('estado')
+  if request.method == "POST":
+    titulo = request.POST.get('titulo').strip()
+    prioridad = request.POST.get('prioridad')
+    estado = request.POST.get('estado')
 
-        if titulo:
-            tarea = Tarea(
-                titulo= titulo, 
-                prioridad= prioridad, 
-                estado= estado, 
-                proyecto= proyecto)
-            tarea.save()
+    if titulo:
+      tarea = Tarea(
+        titulo=titulo, 
+        prioridad=prioridad, 
+        estado=estado, 
+        proyecto=proyecto)
+      tarea.save()
 
-            return redirect('ver_proyecto', id= proyecto_id)
+      return redirect('ver_proyecto', id=proyecto_id)
 
-    datos= {
-        'proyecto': proyecto,
-        'prioridad_choices': Tarea.PRIORIDAD_CHOICES,
-        'estado_choices': Tarea.ESTADO_CHOICES
-    }
+  datos = {
+    'proyecto': proyecto,
+    'prioridad_choices': Tarea.PRIORIDAD_CHOICES,
+    'estado_choices': Tarea.ESTADO_CHOICES
+  }
 
-    return render(request, 'crear-tarea.html', datos)
+  return render(request, 'crear-tarea.html', datos)
 
 @require_POST
 def avanzar_estado_tarea(request, id):
-    tarea = get_object_or_404(Tarea, id=id)
+  tarea = get_object_or_404(Tarea, id=id)
 
-    if tarea.estado == 'PENDIENTE':
-        tarea.estado = 'EN_PROGRESO'
-        tarea.save()
-    elif tarea.estado == 'EN_PROGRESO':
-        tarea.estado = 'COMPLETADA'
-        tarea.save()
-
-    return redirect('ver_proyecto', id= tarea.proyecto.id)
+  if tarea.estado == "PENDIENTE":
+    tarea.estado = "EN_PROGRESO"
+    tarea.save()
+  elif tarea.estado == "EN_PROGRESO":
+    tarea.estado = "COMPLETADA"
+    tarea.save()
+  
+  return redirect('ver_proyecto', id=tarea.proyecto.id)
 
 @require_POST
-def completada_estado_tarea(request, id):
-    tarea = get_object_or_404(Tarea, id=id)
+def completar_tarea(request, id):
+  tarea = get_object_or_404(Tarea, id=id)
 
-
-    if tarea.estado != 'COMPLETADA':
-        tarea.estado = 'COMPLETADA'
-        tarea.save()
-
-    return redirect('ver_proyecto', id= tarea.proyecto.id)
+  if tarea.estado != "COMPLETADA":
+    tarea.estado = "COMPLETADA"
+    tarea.save()
+  
+  return redirect('ver_proyecto', id=tarea.proyecto.id)
 
 @require_POST
 def eliminar_tarea(request, id):
-    tarea = get_object_or_404(Tarea, id= id )
-    id_proyecto = tarea.proyecto.id
-    tarea.delete()
-    return redirect('ver_proyecto', id=id_proyecto)
+  tarea = get_object_or_404(Tarea, id=id)
+
+  id_proyecto = tarea.proyecto.id
+  tarea.delete()
+  return redirect('ver_proyecto',id=id_proyecto)
+  

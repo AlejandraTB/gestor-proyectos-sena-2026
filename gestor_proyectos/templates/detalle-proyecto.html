@@ -112,7 +112,7 @@
                     </h3>
                     <p class="text-slate-700 font-medium flex items-center gap-2">
                         <span class="bg-indigo-50/70 px-3 py-1 rounded-full text-indigo-700 border border-indigo-100/60 text-sm">
-                            {{ proyecto.duarcion|default:"No especificada" }}
+                            {{ proyecto.duracion|default:"No especificada" }}
                         </span>
                     </p>
                 </div>
@@ -179,7 +179,7 @@
                             </span>
                             
                             <!-- Botón avanzar estado -->
-                            <form action="{% url 'avanzar_estado_tareas' tarea.id %}" method="post" class="inline">
+                            <form action="{% url 'avanzar_estado_tarea' tarea.id %}" method="post" class="inline">
                                 {% csrf_token %}
                                 <button type="submit" 
                                         class="btn-tarea inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors
@@ -202,7 +202,7 @@
                             
                             <!-- Botón Completar -->
                             {% if tarea.estado != "COMPLETADA" %}
-                                <form action="{% url 'completar_estado_tareas' tarea.id %}" method="post" class="inline">
+                                <form action="{% url 'completar_tarea' tarea.id %}" method="post" class="inline">
                                     {% csrf_token %}
                                     <button type="submit" 
                                             class="btn-tarea inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors
