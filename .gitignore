@@ -1,5 +1,11 @@
-#Entorno vitual
-entorno_virtual/
+# Entorno virtual
+.venv/
 
-#Base de datos local
+# Base de datos local
 db.sqlite3
+
+# Caché
+__pycache__/
+*.py[cod]
+*.pyc
+*$py.class
