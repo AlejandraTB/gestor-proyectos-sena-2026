@@ -7,6 +7,9 @@ from .models import Proyecto, Tarea
 def home(request):
     return render(request, 'home.html')
 
+def acerca_de(request):
+    return render(request, 'acerca-de.html')
+
 
 def mostrar_proyectos(request):
     proyectos = Proyecto.objects.all()
