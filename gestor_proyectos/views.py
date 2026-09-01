@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 from .models import Proyecto, Tarea
 
+@login_required
 def home(request):
   return render(request, 'home.html')
 
@@ -34,7 +36,7 @@ def nuevo_proyecto(request):
         nombre=nombre,
         descripcion=descripcion,
         duracion=duracion,
-        imagen= imagen,
+        imagen=imagen
       )
       proyecto.save()
     
